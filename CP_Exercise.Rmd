@@ -1,0 +1,47 @@
+---
+title: "Predicting successful excercise form and types of errors from accelerometer data"
+author: "Vladimir Jovanovic"
+date: "Saturday, November 22, 2014"
+output: html_document
+---
+
+```{r set working directory, echo=FALSE}
+setwd("C:\\Users\\D0vla\\Desktop\\Coursera\\Practical Machine Learning\\CP")
+```
+
+```{r load data, cache = TRUE}
+
+if(!file.exists("pml-training.csv"))
+{
+        fileurl<-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+        download.file(fileurl, destfile="./pml-training.csv", method="auto")
+}
+if(!file.exists("pml-testing.csv"))
+{
+        fileurl<-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+        download.file(fileurl, destfile="./pml-testing.csv", method="auto")
+}
+
+training <- read.csv("pml-training.csv", sep = ',', header = TRUE, stringsAsFactors = TRUE)
+testing <- read.csv("pml-testing.csv", sep = ',', header = TRUE, stringsAsFactors = TRUE)
+
+```
+
+
+##Abstract
+
+##Introduction
+
+##Data
+
+##Machine learning algorithms
+
+##Cross-validation and errors
+
+##Results
+
+##Summary
+
+```{r, echo=FALSE}
+```
+
