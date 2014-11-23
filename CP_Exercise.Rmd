@@ -6,8 +6,12 @@ output: html_document
 ---
 
 ```{r set working directory, echo=FALSE}
-setwd("C:\\Users\\D0vla\\Desktop\\Coursera\\Practical Machine Learning\\CP")
+setwd("C:\\Users\\D0vla\\Desktop\\Coursera\\Practical Machine Learning\\CP_1\\PracticalMachineLearning_CourseProject")
 ```
+
+##Abstract
+
+##Introduction
 
 ```{r load data, cache = TRUE}
 
@@ -22,17 +26,79 @@ if(!file.exists("pml-testing.csv"))
         download.file(fileurl, destfile="./pml-testing.csv", method="auto")
 }
 
-training <- read.csv("pml-training.csv", sep = ',', header = TRUE, stringsAsFactors = TRUE)
-testing <- read.csv("pml-testing.csv", sep = ',', header = TRUE, stringsAsFactors = TRUE)
-
+trainingData <- read.csv("pml-training.csv", sep = ',', header = TRUE, na.strings = c("", NA, "#DIV/0!"))
+testingData <- read.csv("pml-testing.csv", sep = ',', header = TRUE, na.strings = c("", NA, "#DIV/0!"))
 ```
 
+##Cleaning up data
 
-##Abstract
+By examining the pml-training.csv, we can establish that it is very neatly ordered by person name and timestamps. This kind of data can cause bias on training and underestimate out-of-sample errors
+.
+Since the testing file, pml-testing.csv, contains the same persons covered in the training file, I decided to keep the "user_name" column because it will be significant for the results in this test file.
+However, for a different test file with different people, "user_name" should not be used for the reasons mentioned above.
 
-##Introduction
+```{r clean up data}
+##removing columns that are mostly null
+mostlyNullColumns <- colSums(is.na(trainingData)) >= 0.3 * nrow(trainingData)
+trainingData <- trainingData[, !mostlyNullColumns]
+testingData <- testingData[, !mostlyNullColumns]
 
-##Data
+##removing columns that relate to timeframe, person name and ordinal number of the row.
+colsToRemove <- c("X", "raw_timestamp_part_1", "raw_timestamp_part_2", "cvtd_timestamp", "new_window", "num_window")
+trainingData <- trainingData[, -which(names(trainingData) %in% colsToRemove)]
+testingData <- testingData[, -which(names(testingData) %in% colsToRemove)]
+```
+
+```{r splitting}
+set.seed(21128)
+library(caret)
+##important <- varImp()
+##nzv <- nearZeroVar(, saveMetrics = TRUE)
+##'testing' is data to be used with cross-validation. It will not be examined.
+inTrain <- createDataPartition(y=trainingData$classe,p=0.75, list=FALSE)
+training <- trainingData[inTrain, ]
+testing <- trainingData[-inTrain, ]
+
+##I am taking a small subset of training data for exploratory (initial) training.
+inExp <- createDataPartition(y=training$classe,p=0.1, list=FALSE)
+exp <- training[inExp, ]
+inExpTrain <- createDataPartition(y=exp$classe,p=0.7, list=FALSE)
+expTrain <- exp[inExpTrain, ]
+expTest  <- exp[-inExpTrain, ]
+
+#nzv <- nearZeroVar(exp, saveMetrics = TRUE)
+rforest <- randomForest(classe~ ., data=expTrain)
+varImpPlot(rforest)
+rforest
+
+importance <- varImp(rforest)
+importantCols <- rownames(importance)[order(importance$Overall, decreasing=TRUE)[1:20]]
+
+pred <- predict(rforest, expTest)
+expTest$predRight <- pred == expTest$classe
+```
+
+I decided to use the 20 most significant variables (obtained by sorting varImp()) as the significant variables in the training.
+
+```{r significant variables}
+importantCols <- append(importantCols, "classe")
+trainingData <- trainingData[, which(names(trainingData) %in% importantCols)]
+testingData <- testingData[, which(names(testingData) %in% importantCols)]
+
+training <- training[, which(names(training) %in% importantCols)]
+testing <- testing[, which(names(testing) %in% importantCols)]
+```
+
+##Exploratory data analysis
+
+
+##training
+##modFit <- train(classe~ ., data=expTrain, method="rf", prox=TRUE)
+
+
+
+
+```
 
 ##Machine learning algorithms
 
