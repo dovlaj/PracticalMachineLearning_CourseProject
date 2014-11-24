@@ -13,7 +13,7 @@ setwd("C:\\Users\\D0vla\\Desktop\\Coursera\\Practical Machine Learning\\CP_PML\\
 
 The aim of this project is to predict correct form or type of error when doing barbell lifts, using data from accellerometers on various parts on the body. The data set measures 6 individuals.
 Random forest algorithm can be trained to show very good results.
-The data set has 160 variables, but by careful removal of mostly-NA variables and keeping only the most significant ones, it can be diminished to 20 variables. With these 20 variables, we can get ~99% accuracy when using random forests. It is likely that this is due to overfitting because of small number of individuals and we cannot guarantee that we will get similar results in general case (when applie to larger public).
+The data set has 160 variables, but by careful removal of mostly-NA variables and keeping only the most significant ones, it can be diminished to 20 variables. With these 20 variables, we can get ~99% accuracy when using random forests. It is likely that this is due to overfitting because of small number of individuals and we cannot guarantee that we will get similar results in general case (when applied to larger public).
 
 
 ##Introduction
